@@ -1,5 +1,22 @@
+# ===== 分发仓库白名单：默认忽略一切，仅放行套件本体与示例 =====
+# 本地的 repos/(2.1G 研究克隆)、tmp/、analysis/、build_*.py、.claude/ 等
+# 均为研究/运行产物，不进分发仓库。
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/install.sh
+!/skills
+!/scripts
+!/evals
+!/examples
+!/docs
+
+# docs/ 只保留知识库页，其余一次性结果页不入库
+/docs/*
+!/docs/prompt-engineering-knowledge.html
+
+# 通用
 .DS_Store
 __pycache__/
 *.pyc
-# 一次性结果页（按需生成，不入库）
-优化结果-*.html

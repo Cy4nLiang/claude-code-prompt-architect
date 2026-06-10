@@ -1,0 +1,100 @@
+# prompt-architect 套件 · 触发回归用例
+#
+# 来源：.claude/artifacts/pa-skills-review.html「10 条真实语料触发推演」表（2026-06-10 评审）。
+# 用法：改任何 SKILL.md 的 frontmatter description 前后各跑一遍——对每条 utterance，
+#       仅凭全部已装 skill 的 description（触发判定不看正文）判断最先触发哪个 skill，
+#       与 expected_trigger 比对；must_not_trigger 命中即失败。
+# 字段：
+#   utterance           用户原话（逐字，勿改写）
+#   expected_trigger    应当被首先触发的 skill；none = 不应触发 pa 套件任何成员
+#   acceptable          可接受的替代触发（语境合理时不算失败）
+#   expected_pipeline   触发后预期的套件内部路由链（按入口三段判定）
+#   must_not_trigger    绝不能首先触发/抢流量的 skill
+#   review_before       改写前评审判定（回归对照基线）
+
+cases:
+  - id: 1
+    utterance: "帮我优化一下这个 prompt:（贴一段）"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]
+    must_not_trigger: [pa-optimize]
+    review_before: "半错配：pa-optimize 直连，跳过围栏+解构，喂养同质化"
+
+  - id: 2
+    utterance: "这个 prompt 不好用，帮我看看"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]
+    must_not_trigger: [troubleshooting, pa-eval]
+    review_before: "基本正确：description 原文强匹配"
+
+  - id: 3
+    utterance: "帮我让 AI 输出稳定点"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]
+    must_not_trigger: [pa-precise-retrieval, pa-eval]
+    review_before: "路径不可控：与 pa-precise-retrieval 摇摆"
+
+  - id: 4
+    utterance: "写个生成商品图的提示词"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-image, pa-eval]   # 模态最先判；主体/用途/保真不明时先过 pa-deconstruct
+    must_not_trigger: [pa-image]
+    review_before: "半错配：pa-image 直连（入口 description 无图像词）"
+
+  - id: 5
+    utterance: "写个产品广告视频 prompt，用即梦"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-video, pa-eval]
+    must_not_trigger: [pa-video, pa-optimize]
+    review_before: "本项目命中；其他项目旧版无 pa-video → 文本管线硬错配（已删用户级旧副本）"
+
+  - id: 6
+    utterance: "优化我项目里 agent 的 system prompt（prompts.py）"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]
+    must_not_trigger: [workflow-code-generation]
+    review_before: "被生态抢走：workflow-code-generation 的'统一入口必须首先调用'吃掉"
+
+  - id: 7
+    utterance: "给我做一个 prompt 调优的对比报告"
+    expected_trigger: prompt-architect   # bp-html-artifacts 仅在产出需 HTML 展示时配合
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]
+    must_not_trigger: [bp-html-artifacts]
+    review_before: "被生态抢走：bp-html-artifacts 独占（'prompt 调优'三词命中+强制预加载）"
+
+  - id: 8
+    utterance: "rewrite this prompt so the model returns valid JSON"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-precise-retrieval, pa-eval]   # consumer=machine；pa-eval 由 precise-retrieval 第 7 步调用
+    must_not_trigger: [pa-optimize, pa-precise-retrieval, pa-eval]
+    review_before: "路径不可控：pa-optimize 与 pa-precise-retrieval 双双直连竞争，入口反而最弱"
+
+  - id: 9
+    utterance: "先帮我理清需求：我想做用户反馈分类器"
+    expected_trigger: prompt-architect   # 目标产物本质是一个分类 prompt
+    acceptable: [workflow-requirements-clarification]   # 纯软件开发语境下合理
+    expected_pipeline: [pa-deconstruct]
+    must_not_trigger: [pa-deconstruct, squad-spec]
+    review_before: "易错配：三方竞争（workflow-requirements-clarification / squad-spec），易被带进 spec 流水线"
+
+  - id: 10
+    utterance: "把这段客服话术改得更专业点"
+    expected_trigger: none   # 用户要成品文案，不是要 prompt——入口负向边界应拦住
+    expected_pipeline: []
+    must_not_trigger: [prompt-architect, pa-optimize]
+    review_before: "反向误触发：pa-optimize 误触发后按围栏铁律产出'生成话术的 prompt'而非改好的话术"
+
+  # ---- 二期（pa-eval 上线）新增 ----
+  - id: 11
+    utterance: "帮我评测一下这个 prompt 写得好不好，打个分"
+    expected_trigger: prompt-architect   # 评测也是套件入口的活——先围栏建 IR 再交 pa-eval
+    expected_pipeline: [pa-deconstruct, pa-eval]
+    must_not_trigger: [pa-eval]
+    review_before: "新增（二期）：pa-eval 上线后需防口语'评测/打分'直连判别器"
+
+  - id: 12
+    utterance: "帮我写个小红书种草文案的 prompt，要闺蜜安利感"
+    expected_trigger: prompt-architect
+    expected_pipeline: [pa-deconstruct, pa-optimize, pa-eval]   # genre=creative → Voice 卡骨架 + 3 候选
+    must_not_trigger: [pa-optimize, bp-html-artifacts]
+    review_before: "新增（二期）：反同质化代表用例——creative 体裁不得套五段式"

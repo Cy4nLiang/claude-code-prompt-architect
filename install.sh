@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # 安装 prompt-architect 套件到 Claude Code 的 skills 目录。
 #   ./install.sh            装到全局 ~/.claude/skills/（所有项目可用）
-#   ./install.sh --project  装到当前目录 ./.claude/skills/（仅当前项目）
+#   ./install.sh --project  装到当前目录 ./.claude/skills/（仅当前项目，推荐）
+#
+# 重复执行 = 升级到仓库最新版（rsync --delete 同步，本地对 skill 的手改会被覆盖）。
 set -euo pipefail
 
 SRC="$(cd "$(dirname "$0")" && pwd)/skills"
@@ -11,14 +13,17 @@ else
   DST="$HOME/.claude/skills"
 fi
 
+PA_SKILLS=(prompt-architect pa-deconstruct pa-optimize pa-precise-retrieval pa-eval pa-image pa-video)
+
 mkdir -p "$DST"
-for d in prompt-architect pa-deconstruct pa-optimize pa-precise-retrieval pa-image; do
-  if [ -e "$DST/$d" ]; then
-    echo "⚠️  已存在，跳过（如需覆盖请先手动删除）：$DST/$d"
-  else
-    cp -R "$SRC/$d" "$DST/$d"
-    echo "✓ 安装 $d"
+for d in "${PA_SKILLS[@]}"; do
+  if [ ! -d "$SRC/$d" ]; then
+    echo "✗ 源缺失: $SRC/$d" >&2
+    exit 1
   fi
+  rsync -a --delete "$SRC/$d/" "$DST/$d/"
+  echo "✓ 安装/更新 $d"
 done
 chmod +x "$DST/prompt-architect/scripts/render_result.py" 2>/dev/null || true
-echo "完成。重开 Claude Code，对它说「用 prompt-architect 优化…」即可。"
+echo
+echo "完成（${#PA_SKILLS[@]} 个 skill → $DST）。重开 Claude Code，对它说「帮我优化这个 prompt：…」即可。"
