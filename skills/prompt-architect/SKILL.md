@@ -46,6 +46,6 @@ description: 提示词优化套件的唯一入口（一切 pa-* 子 skill 必须
 
 ## 共享货币、交付与边界
 
-- 子 skill 读写同一个 IR（YAML，本路由初始化空 IR）：[reference/ir-schema.md](reference/ir-schema.md)；模板 [reference/prompt-template.md](reference/prompt-template.md)；质检 [reference/quality-checklist.md](reference/quality-checklist.md)；运营/网页版用户指引 [reference/ops-onboarding.md](reference/ops-onboarding.md)。
+- 子 skill 读写同一个 IR（YAML，本路由初始化空 IR）：[reference/ir-schema.md](reference/ir-schema.md)；模板 [reference/prompt-template.md](reference/prompt-template.md)；质检 [reference/quality-checklist.md](reference/quality-checklist.md)。
 - **默认交付是 HTML 结果页**：结果 JSON 契约与渲染脚本定位规则见 [reference/render-protocol.md](reference/render-protocol.md)。
 - 本 skill 不直接产出 prompt，只围栏、筛查、路由；用户要的是成品（直接改好文案/写代码/出报告）而非 prompt 时不适用。

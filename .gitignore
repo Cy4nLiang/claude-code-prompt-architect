@@ -12,9 +12,10 @@
 !/examples
 !/docs
 
-# docs/ 只保留知识库页，其余一次性结果页不入库
+# docs/ 只保留知识库页与运营指南，其余一次性结果页不入库
 /docs/*
 !/docs/prompt-engineering-knowledge.html
+!/docs/ops-onboarding.md
 
 # 通用
 .DS_Store

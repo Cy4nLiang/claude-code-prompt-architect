@@ -119,7 +119,7 @@ cd /path/to/your-project
 3. **产出 prompt + HTML 结果页**：终端里给你一条 `open …` 命令，浏览器打开就能复制、对比候选、逐项勾检查清单；
 4. **不满意就说哪不对**：它会在原版基础上做最小修改，不会推倒重来（历次尝试有版本记录，改坏了会自动回退）。
 
-> **给运营/非技术同事**：发给 TA [`skills/prompt-architect/reference/ops-onboarding.md`](skills/prompt-architect/reference/ops-onboarding.md)，照着填空就能用；结果页里的 prompt 复制后粘进 ChatGPT / 豆包 / Kimi / 即梦等任意工具均可。
+> **给运营/非技术同事**：发给 TA [`docs/ops-onboarding.md`](docs/ops-onboarding.md)，照着填空就能用；结果页里的 prompt 复制后粘进 ChatGPT / 豆包 / Kimi / 即梦等任意工具均可。
 
 ---
 
@@ -204,8 +204,7 @@ skills/                              ← skill 唯一源（改这里，然后跑
 │   │   ├── prompt-template.md       ← 体裁模板谱系索引 + general 兜底骨架
 │   │   ├── templates/               ← 六大体裁模板（creative / conversation-role / extract / …）
 │   │   ├── quality-checklist.md     ← 三层质检清单（L0 安全 / L1 结构 / L2 强制），按体裁条件适用
-│   │   ├── render-protocol.md       ← 结果 JSON → HTML 的渲染契约
-│   │   └── ops-onboarding.md        ← 给运营同事的零代码上手指南
+│   │   └── render-protocol.md       ← 结果 JSON → HTML 的渲染契约
 │   └── scripts/render_result.py     ← HTML 结果页渲染器
 ├── pa-deconstruct/                  ← 意图挖掘（examples/ 含三体裁对照 IR 示例）
 ├── pa-optimize/                     ← 编译器（reference/strategy-tips.md 候选策略库）
@@ -217,6 +216,7 @@ skills/                              ← skill 唯一源（改这里，然后跑
 evals/trigger-cases.yaml             ← 12 条触发回归用例（改 skill description 前后各跑一遍）
 examples/                            ← 本 README 三个测试实例的结果 JSON + HTML + 截图
 scripts/sync-skills.sh               ← 开发用：skills/ 源 → 本仓库自身的 .claude/skills/
+docs/ops-onboarding.md               ← 给运营/非技术同事的零代码上手指南（人读文档，不随 skill 安装）
 docs/prompt-engineering-knowledge.html ← 理论知识库：20 框架的 8 范式/12 原则/12 设计模式
 ```
 
